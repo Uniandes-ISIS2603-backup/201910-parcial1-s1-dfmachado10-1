@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package co.edu.uniandes.csw.recipes.test.persistence;
+package co.edu.uniandes.csw.recipes.test.logic;
 
+import co.edu.uniandes.csw.recipes.ejb.RecipeLogic;
 import co.edu.uniandes.csw.recipes.entities.RecipeEntity;
 import co.edu.uniandes.csw.recipes.persistence.RecipePersistence;
 import javax.inject.Inject;
@@ -22,11 +23,16 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 /**
  *
- * @author CesarF
+ * @author estudiante
  */
-
 @RunWith(Arquillian.class)
-public class RecipePersistenceTest {
+public class RecipeLogicTest {
+    
+    private PodamFactory factory = new PodamFactoryImpl();
+    
+    @Inject
+    private RecipeLogic reLogic;
+    
     @Inject
     RecipePersistence recipePersistence;
 
@@ -38,23 +44,36 @@ public class RecipePersistenceTest {
         return ShrinkWrap.create(JavaArchive.class)
                 .addPackage(RecipeEntity.class.getPackage())
                 .addPackage(RecipePersistence.class.getPackage())
+                .addPackage(RecipeLogic.class.getPackage())
                 .addAsManifestResource("META-INF/persistence.xml", "persistence.xml")
                 .addAsManifestResource("META-INF/beans.xml", "beans.xml");
     }
-
+    
     @Test
-    public void createRecipeTest() {
-        PodamFactory factory = new PodamFactoryImpl();
-        RecipeEntity newEntity = factory.manufacturePojo(RecipeEntity.class);
-        RecipeEntity creado = recipePersistence.createRecipe(newEntity);
+    public void createRecipeTest(){
         
-        Assert.assertNotNull(creado);
+        RecipeEntity entidad = factory.manufacturePojo(RecipeEntity.class);
+        entidad.setName("Pollo asado");
+        entidad.setDescription("Muy rico");
+            
+        try {
+            
+            RecipeEntity nuevo = reLogic.createRecipe(entidad);
+            
+            Assert.assertNotNull(nuevo);
         
-        RecipeEntity entidad = em.find(RecipeEntity.class,creado.getId());
+            RecipeEntity entidadNueva = em.find(RecipeEntity.class,nuevo.getId());
         
-        Assert.assertEquals(entidad.getId()+"", newEntity.getId()+"");
-        Assert.assertEquals(entidad.getName(), newEntity.getName());
-        Assert.assertEquals(entidad.getDescription(), newEntity.getDescription());
-        //TODO terminar la prueba         
+            Assert.assertEquals(entidadNueva.getId()+"", entidad.getId()+"");
+            Assert.assertEquals(entidadNueva.getName(), entidad.getName());
+            Assert.assertEquals(entidadNueva.getDescription(), entidad.getDescription());
+                
+                
+        } catch (Exception e) {
+            
+            Assert.fail("No deberia fallar");
+        }
     }
+    
+    
 }

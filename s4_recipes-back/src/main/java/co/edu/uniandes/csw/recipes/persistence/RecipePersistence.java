@@ -31,6 +31,33 @@ public class RecipePersistence {
         return em.find(RecipeEntity.class, id);
     }
     
+    
+    public RecipeEntity findByName(String name){
+        TypedQuery query = em.createQuery("Select e From RecipeEntity e where e.name = :name", RecipeEntity.class);
+        query.setParameter("name", name);
+        
+        List<RecipeEntity> resultado = query.getResultList();
+        RecipeEntity encontrado;
+        
+        if(resultado == null){
+            encontrado = null;
+        }
+        else if(resultado.isEmpty()){
+            encontrado = null;
+        }
+        else{
+            encontrado = resultado.get(0);
+        }
+        
+        return encontrado;
+    }
+    
     //TODO método crear de recipe
+    public RecipeEntity createRecipe(RecipeEntity entidad){
+        em.persist(entidad);
+        return entidad;
+    }
+    
+    
 
 }

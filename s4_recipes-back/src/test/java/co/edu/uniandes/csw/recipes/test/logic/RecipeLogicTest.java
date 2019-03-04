@@ -6,6 +6,7 @@
 package co.edu.uniandes.csw.recipes.test.logic;
 
 import co.edu.uniandes.csw.recipes.ejb.RecipeLogic;
+import co.edu.uniandes.csw.recipes.entities.IngredientEntity;
 import co.edu.uniandes.csw.recipes.entities.RecipeEntity;
 import co.edu.uniandes.csw.recipes.persistence.RecipePersistence;
 import javax.inject.Inject;
@@ -43,6 +44,7 @@ public class RecipeLogicTest {
     public static JavaArchive createDeployment() {
         return ShrinkWrap.create(JavaArchive.class)
                 .addPackage(RecipeEntity.class.getPackage())
+                .addPackage(IngredientEntity.class.getPackage())
                 .addPackage(RecipePersistence.class.getPackage())
                 .addPackage(RecipeLogic.class.getPackage())
                 .addAsManifestResource("META-INF/persistence.xml", "persistence.xml")

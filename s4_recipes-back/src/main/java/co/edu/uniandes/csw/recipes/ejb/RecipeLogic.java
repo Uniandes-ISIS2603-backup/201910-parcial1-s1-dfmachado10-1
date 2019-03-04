@@ -17,6 +17,7 @@ import javax.inject.Inject;
  */
 @Stateless
 public class RecipeLogic {
+    
     @Inject
     private RecipePersistence persistence; // Variable para acceder a la persistencia de la aplicación. Es una inyección de dependencias.
 
@@ -42,6 +43,9 @@ public class RecipeLogic {
             }
             else if(entidad.getDescription().length()>150){
                 throw new BusinessLogicException("la descripción es muy largo");
+            }
+            else if(entidad.getIngredientes().size()< 1){
+                throw new BusinessLogicException("no tiene ingredientes");
             }
             else{
                 nueva = persistence.createRecipe(entidad);
